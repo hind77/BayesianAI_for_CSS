@@ -25,21 +25,21 @@ class BayesianUCBPolicy:
         self.values = np.zeros(action_space.n, dtype=np.float)
         self.upper_bounds = np.zeros(action_space.n, dtype=np.float)
         self.t = 0
-
-    def sample(self, observation):
-        self.t += 1
-        for a in range(self.action_space.n):
-            if self.counts[a] == 0:
+    @classmethod
+    def sample(cls, observation):
+        cls.t += 1
+        for a in range(cls.action_space.n):
+            if cls.counts[a] == 0:
                 return a
-        ucb_values = self.values + np.sqrt(2 * np.log(self.t) / self.counts)
+        ucb_values = cls.values + np.sqrt(2 * np.log(cls.t) / cls.counts)
         action = np.argmax(ucb_values)
         return action
-
-    def update(self, observation, action, reward):
-        self.counts[action] += 1
-        n = self.counts[action]
-        value = self.values[action]
-        self.values[action] = ((n - 1) / n) * value + (1 / n) * reward
+    @classmethod
+    def update(cls, observation, action, reward):
+        cls.counts[action] += 1
+        n = cls.counts[action]
+        value = cls.values[action]
+        cls.values[action] = ((n - 1) / n) * value + (1 / n) * reward
 
 # Define the main algorithm loop
 num_episodes = 100
